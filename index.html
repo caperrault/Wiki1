@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Force-Directed Graph</title>
+<title>Wikipedia Cartography</title>
 <style>
 
 body {
@@ -52,8 +52,8 @@ div.mapTooltip {
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var width = 1888,
-    height = 1004,
+var width = 1500,
+    height = 1000,
     root;
 
 var force = d3.layout.force()
@@ -79,7 +79,7 @@ var div = d3.select("body").append("div")
   .attr("class", "mapTooltip")
   .style("opacity", 0);
 
-d3.json("audi_current_test.json", function(json) {
+d3.json("audi_final.json", function(json) {
   root = json;
   update();
 });
@@ -119,12 +119,12 @@ function update() {
       .attr("class", "node")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; })
-      .attr("r", function(d) { return Math.sqrt(d.n);})
+      .attr("r", function(d) { return d._children ? 80 : d.children ? 80 : Math.sqrt(d.n/Math.PI)*2;})
       .style("fill", color)
       .on("click", click)
       .on("mouseover", function(d) {
             div.transition().duration(300).style("opacity", 1);
-            div.text(d.name + " (" + d.n + " connections)")
+            div.text( d._children ? d.prev_title + ": " + d.n + " connections" : d.children ? d.prev_title + ": " + d.n + " connections" : d.prev_title + ": " + d.n + " connections (" + d.conec_perc + "%)")
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY -30) + "px");})
       .on("mouseout", function (d) { div.transition().duration(300).style("opacity", 0);})
